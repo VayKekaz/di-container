@@ -19,11 +19,12 @@ export class MyProviderA extends BaseProvider {
 }
 
 @Provider
-export class MyProviderB {
+export class MyProviderB extends BaseProvider {
     constructor(
         // declare dependency inside a constructor
         private readonly a: MyProviderA,
     ) {
+        super();
     }
 }
 ```
