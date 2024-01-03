@@ -1,29 +1,32 @@
-import { PathLike } from 'fs';
-import path from 'path';
-import { isProvider } from './decorators';
+import { InstantiationError } from './errors';
+import { ProviderScanOptions, ProviderScanner } from './ProviderScanner';
 import { AbstractClass, Class, ProviderClass } from './types';
-import { getAllFiles, getCaller } from './util';
+import { getConstructorParams } from './util';
 
 
+export type DiContainerOptions = Partial<{
+    // Options for ProviderScanner
+    scan: ProviderScanOptions
+}>
+
+/**
+ * Scans for classes decorated with `@Provider()` and instantiates them.
+ */
 export class DiContainer {
-    protected providerClasses: ReadonlyArray<ProviderClass> = [];
     protected readonly providers = new Map<any, any>();
+    readonly scanner: ProviderScanner;
 
-    constructor(readonly scanDirectory: PathLike = '.') {
+    constructor(options: DiContainerOptions = {}) {
+        this.scanner = new ProviderScanner(options?.scan);
     }
 
     async init(force: boolean = false): Promise<this> {
-        if (!force && this.providerClasses.length > 0)
-            throw new Error('This container seems initialized. ' +
-                'If you want to re-scan all providers anyway then use `.init(true)`. ' +
-                'Note that it will destroy all the references to previously initialized providers.');
-
-        this.providerClasses = await this.findProviderClasses();
-        this.instantiateProviders();
+        await this.scanner.init(force);
+        this.instantiateProvidersB();
         return this;
     }
 
-    get<T>(clazz: Class<T>): T | null {
+    get<T, Args extends ConstructorParameters<Class<T>>>(clazz: Class<T, Args>): T | null {
         return this.providers.get(clazz) ?? null;
     }
 
@@ -36,51 +39,64 @@ export class DiContainer {
         return found;
     }
 
-    private async findProviderClasses(): Promise<Array<ProviderClass>> {
-        const files = await getAllFiles(path.join(
-            path.dirname(getCaller()),
-            String(this.scanDirectory),
-        ));
-        const providersFound: Array<Class> = [];
-        for (const file of files) {
-            providersFound.push(...this.findProviderClassesInFile(file));
-        }
-        return providersFound;
-    }
-
-    private findProviderClassesInFile(filepath: string): Array<ProviderClass> {
-        const providersFound = [];
-        try {
-            // console.log(`Requiring ${filepath}`);
-            const exportedMembers = require(filepath);
-            // console.log('Found members:', Object.values(exportedMembers));
-            for (const member of Object.values(exportedMembers)) {
-                if (isProvider(member))
-                    providersFound.push(member);
-            }
-        } catch (e) {
-            // console.error(e);
-        }
-        // console.log('Found providers:', providersFound);
-        return providersFound;
-    }
-
     private instantiateProviders() {
-        const providersFound: Array<ProviderClass> = [];
-        providersFound.push(...this.providerClasses);
-        while (this.providers.size < this.providerClasses.length) {
+        const providersFound: Array<ProviderClass> = [...this.scanner.providers];
+        while (this.providers.size < this.scanner.providers.length) {
             const providerConstructor = providersFound.shift()!;
-            const paramsRequired = Reflect.getMetadata('design:paramtypes', providerConstructor) || [];
+            const paramsRequired = getConstructorParams(providerConstructor);
             const paramsProvided = [];
             for (const requiredParam of paramsRequired) {
                 const provided = this.providers.get(requiredParam);
                 if (provided)
                     paramsProvided.push(provided);
             }
-            if (paramsProvided.length === paramsRequired.length)
+            if (paramsProvided.length === paramsRequired.length) {
+                // console.log(`Instantiated ${providerConstructor.name}`);
                 this.providers.set(providerConstructor, new providerConstructor(...paramsProvided));
-            else
+            } else {
+                // console.log(`Postponed ${providerConstructor.name}`);
                 providersFound.push(providerConstructor);
+            }
         }
     }
+
+    private instantiateProvidersB() {
+        const unresolvedDependencies = new Map<ProviderClass, Array<Class>>();
+        let isProgressMade = true;
+
+        while (isProgressMade) {
+            isProgressMade = false;
+
+            for (const provider of this.scanner.providers) {
+                const paramsRequired = getConstructorParams(provider);
+
+                if (this.providers.has(provider))
+                    continue;
+
+                const paramsProvided = [];
+                let allDependenciesResolved = true;
+                for (const param of paramsRequired) {
+                    const provided = this.providers.get(param);
+                    if (provided) {
+                        paramsProvided.push(provided);
+                    } else {
+                        allDependenciesResolved = false;
+                        break;
+                    }
+                }
+
+                if (allDependenciesResolved) {
+                    this.providers.set(provider, new provider(...paramsProvided));
+                    isProgressMade = true;
+                } else {
+                    const unresolvedParams = paramsRequired.filter(param => !this.providers.has(param));
+                    unresolvedDependencies.set(provider, unresolvedParams);
+                }
+            }
+        }
+
+        if (unresolvedDependencies.size > 0)
+            throw new InstantiationError(unresolvedDependencies);
+    }
+
 }

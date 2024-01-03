@@ -1,36 +1,35 @@
-import 'reflect-metadata';
-import { DiContainer } from '../src/DiContainer';
-import { BaseProvider } from './BaseProvider';
-import { ProviderA, ProviderB } from './providers';
-import { ProviderC } from './subdir/ProviderC';
+import { DiContainer } from '../src';
+import { BaseProvider } from './assets/BaseProvider';
+import { ProviderA, ProviderB } from './assets/providers_A_B';
+import { BasicScope } from './assets/scopes';
+import { ProviderC } from './assets/subdir/ProviderC';
 
 
 describe('DI Container test', () => {
     let container: DiContainer;
 
     beforeAll(async () => {
-        container = await new DiContainer().init();
+        container = await new DiContainer({
+            scan: { scanDirectory: __dirname, scope: BasicScope },
+        }).init();
     });
 
-    test('a', async () => {
+    test('a is instantiated', async () => {
         const a = container.get(ProviderA);
-        expect(a).toBeDefined();
-        expect(a instanceof ProviderA).toBeTruthy();
+        expect(a).toBeInstanceOf(ProviderA);
     });
 
-    test('b', async () => {
+    test('b is instantiated', async () => {
         const b = container.get(ProviderB);
-        expect(b).toBeDefined();
-        expect(b instanceof ProviderB).toBeTruthy();
+        expect(b).toBeInstanceOf(ProviderB);
     });
 
-    test('c', async () => {
+    test('c is instantiated', async () => {
         const c = container.get(ProviderC);
-        expect(c).toBeDefined();
-        expect(c instanceof ProviderC).toBeTruthy();
+        expect(c).toBeInstanceOf(ProviderC);
     });
 
-    test('inheritance', () => {
+    test('inheritance is working properly', () => {
         const providers = container.getSubclasses(BaseProvider);
         const a = container.get(ProviderA)!;
         const b = container.get(ProviderB)!;

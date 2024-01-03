@@ -1,25 +1,26 @@
-import { isProviderSymbol } from './decorators';
+import { isProviderSymbol, providerScopeSymbol } from './decorators';
 
-
-export type AbstractClass<
-    T = unknown,
-    Args extends unknown[] = unknown[]
-> = abstract new (...args: Args) => T;
-
-export type Class<
-    T = unknown,
-    Args extends Array<unknown> = Array<any>
-> = {
-    new(...args: Args): T
-}
 
 export type ProviderMetadata = {
     [isProviderSymbol]: boolean
+    [providerScopeSymbol]: string | symbol | null
 }
 
-export type ProviderClass<
+export type AbstractClass<
     T = unknown,
-    Args extends Array<unknown> = Array<any>
+    Args extends ConstructorParameters<Class<T>> = Array<unknown>,
+> =
+    abstract new(...args: Args) => T
+
+export type Class<
+    T = unknown,
+    Args extends ConstructorParameters<Class<T>> = Array<unknown>,
+> =
+    new(...args: Args) => T
+
+export type ProviderClass<
+    T extends unknown = unknown,
+    Args extends ConstructorParameters<Class<T>> = Array<unknown>,
 > = Class<T, Args> & {
     prototype: T & { metadata: ProviderMetadata }
 }

@@ -2,18 +2,28 @@
   "name": "di-container",
   "packageManager": "yarn@4.0.2",
   "scripts": {
-    "test": "jest"
+    "build": "tsc",
+    "test": "jest",
+    "prepack": "yarn run build"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",
     "@types/node": "^20.10.6",
     "jest": "^29.7.0",
+    "reflect-metadata": "^0.2.1",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
-  "dependencies": {
+  "peerDependencies": {
     "reflect-metadata": "^0.2.1"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -22,7 +32,7 @@
       "ts"
     ],
     "rootDir": "test",
-    "testRegex": ".*\\.ts$",
+    "testRegex": ".*\\.test\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
@@ -30,6 +40,9 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "setupFiles": [
+      "<rootDir>/jest.setup.ts"
+    ]
   }
 }

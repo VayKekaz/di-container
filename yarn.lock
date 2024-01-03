@@ -1225,26 +1225,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caller-callsite@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "caller-callsite@npm:5.0.0"
-  dependencies:
-    callsites: "npm:^4.0.0"
-  checksum: 7ee1ffff1b7ffc47b5197eb32473d4cf0b3a0d97faa47ad1d685c1f53010931c497bb0794e272b883c05be98db4241aeb96b78bf1d5367a1da385441682b33b1
-  languageName: node
-  linkType: hard
-
 "callsites@npm:^3.0.0":
   version: 3.1.0
   resolution: "callsites@npm:3.1.0"
   checksum: fff92277400eb06c3079f9e74f3af120db9f8ea03bad0e84d9aede54bbe2d44a56cccb5f6cf12211f93f52306df87077ecec5b712794c5a9b5dac6d615a3f301
-  languageName: node
-  linkType: hard
-
-"callsites@npm:^4.0.0":
-  version: 4.1.0
-  resolution: "callsites@npm:4.1.0"
-  checksum: 91700844127a6dcd4792d231a12dd8e9ec10525eb9962180a8558417d7e3f443e52a4f14746ad2838eaf14f79431ee1539d13bd188da280f720a06a91bd1157a
   languageName: node
   linkType: hard
 
@@ -1475,12 +1459,13 @@ __metadata:
   dependencies:
     "@types/jest": "npm:^29.5.11"
     "@types/node": "npm:^20.10.6"
-    caller-callsite: "npm:^5.0.0"
     jest: "npm:^29.7.0"
     reflect-metadata: "npm:^0.2.1"
     ts-jest: "npm:^29.1.1"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.3.3"
+  peerDependencies:
+    reflect-metadata: ^0.2.1
   languageName: unknown
   linkType: soft
 
@@ -1506,9 +1491,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.601":
-  version: 1.4.616
-  resolution: "electron-to-chromium@npm:1.4.616"
-  checksum: a02416f3293d28120d5132546a6aea614ebd2d820a684f41b1c20138331922ddc672c4a59bfc4b91bb5aee1ba608f6c10cd3f69c344cd434397e7f14a4c97348
+  version: 1.4.617
+  resolution: "electron-to-chromium@npm:1.4.617"
+  checksum: ffc594fdf605abe613ef94e2baefec135f21971ff977207bbcb978e5dc0f2684d6667f549c125e064ff8972dec26a74f1447c9eca1c00c2279a51172dc6451c3
   languageName: node
   linkType: hard
 
