@@ -1,10 +1,12 @@
 {
-  "name": "di-container",
+  "name": "@vaykekaz/di-container",
+  "version": "0.0.2",
   "packageManager": "yarn@4.0.2",
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "prepack": "yarn run build"
+    "prepack": "yarn run build",
+    "_prepublish": "yarn run test"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",

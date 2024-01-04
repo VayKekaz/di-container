@@ -932,6 +932,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vaykekaz/di-container@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@vaykekaz/di-container@workspace:."
+  dependencies:
+    "@types/jest": "npm:^29.5.11"
+    "@types/node": "npm:^20.10.6"
+    jest: "npm:^29.7.0"
+    reflect-metadata: "npm:^0.2.1"
+    ts-jest: "npm:^29.1.1"
+    ts-node: "npm:^10.9.2"
+    typescript: "npm:^5.3.3"
+  peerDependencies:
+    reflect-metadata: ^0.2.1
+  languageName: unknown
+  linkType: soft
+
 "abbrev@npm:^2.0.0":
   version: 2.0.0
   resolution: "abbrev@npm:2.0.0"
@@ -1452,22 +1468,6 @@ __metadata:
   checksum: c38cfc8eeb9fda09febb44bcd85e467c970d4e3bf526095394e5a4f18bc26dd0cf6b22c69c1fa9969261521c593836db335c2795218f6d781a512aea2fb8209d
   languageName: node
   linkType: hard
-
-"di-container@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "di-container@workspace:."
-  dependencies:
-    "@types/jest": "npm:^29.5.11"
-    "@types/node": "npm:^20.10.6"
-    jest: "npm:^29.7.0"
-    reflect-metadata: "npm:^0.2.1"
-    ts-jest: "npm:^29.1.1"
-    ts-node: "npm:^10.9.2"
-    typescript: "npm:^5.3.3"
-  peerDependencies:
-    reflect-metadata: ^0.2.1
-  languageName: unknown
-  linkType: soft
 
 "diff-sequences@npm:^29.6.3":
   version: 29.6.3

@@ -11,7 +11,7 @@ export const providerScopeSymbol = Symbol('providerScope');
  * @param scope if provider's scope does not match service's scope, it won't be included
  */
 export const Provider = (scope: string | symbol | null = null) =>
-    <T, Args extends ConstructorParameters<Class<T>>>(clazz: Class<T, Args>): ProviderClass<T, Args> =>
+    <T extends Class>(clazz: T): T & ProviderClass =>
         addProviderMetadata(clazz, { [isProviderSymbol]: true, [providerScopeSymbol]: scope });
 
 export const isProvider = (thing: unknown): thing is ProviderClass => {

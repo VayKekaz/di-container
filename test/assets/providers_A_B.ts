@@ -4,12 +4,15 @@ import { BaseProvider } from './BaseProvider';
 import { BasicScope } from './scopes';
 
 
-// @ts-ignore for some reason experimentalDecorators option does not work here
 @Provider(BasicScope)
 export class ProviderA extends BaseProvider {
+
+    // test that decorator type return type assignable to class that's being decorated
+    // since static methods are not included by `new (...args: any[]) => any` type
+    static method() {
+    }
 }
 
-// @ts-ignore for some reason experimentalDecorators option does not work here
 @Provider(BasicScope)
 export class ProviderB extends BaseProvider {
     constructor(private readonly providerA: ProviderA) {
