@@ -1,4 +1,5 @@
-import { Class, ProviderClass } from './types';
+import { ProviderClass } from './metadata';
+import { Class } from './types';
 
 
 export class InstantiationError extends Error {

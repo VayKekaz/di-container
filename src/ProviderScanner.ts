@@ -1,7 +1,8 @@
 import { PathLike } from 'fs';
 import path from 'path';
 import { isCorrectScope, isProvider } from './decorators';
-import { AbstractClass, ProviderClass } from './types';
+import { ProviderClass } from './metadata';
+import { AbstractClass } from './types';
 import { getAllFiles, isSubclassOf } from './util';
 
 

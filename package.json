@@ -1,6 +1,6 @@
 {
   "name": "@vaykekaz/di-container",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "packageManager": "yarn@4.0.2",
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
@@ -19,13 +19,6 @@
   },
   "peerDependencies": {
     "reflect-metadata": "^0.2.1"
-  },
-  "files": [
-    "dist/**/*"
-  ],
-  "publishConfig": {
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -46,5 +39,17 @@
     "setupFiles": [
       "<rootDir>/jest.setup.ts"
     ]
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "description": "A proper DI container for node js.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VayKekaz/di-container"
   }
 }

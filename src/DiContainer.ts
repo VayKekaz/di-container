@@ -1,6 +1,7 @@
 import { InstantiationError } from './errors';
-import { ProviderScanOptions, ProviderScanner } from './ProviderScanner';
-import { AbstractClass, Class, ProviderClass } from './types';
+import { ProviderClass } from './metadata';
+import { ProviderScanner, ProviderScanOptions } from './ProviderScanner';
+import { AbstractClass, Class } from './types';
 import { getConstructorParams } from './util';
 
 
