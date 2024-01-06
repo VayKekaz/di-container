@@ -1,9 +1,9 @@
 {
   "name": "@vaykekaz/di-container",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "packageManager": "yarn@4.0.2",
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
+    "build": "rm -rf dist && tsc --project tsconfig.build.json",
     "test": "jest",
     "prepack": "yarn run build",
     "_prepublish": "yarn run test"
@@ -44,6 +44,7 @@
     "dist/**/*"
   ],
   "publishConfig": {
+    "access": "public",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts"
   },
