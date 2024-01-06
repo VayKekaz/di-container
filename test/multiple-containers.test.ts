@@ -29,7 +29,7 @@ describe('Multple containers test', () => {
     });
 
     test('containers do not share instances', () => {
-        expect(ca.scanner.providers).toHaveLength(3);
+        expect(ca.scanner.providers).toHaveLength(4);
         expect(cb.scanner.providers).toHaveLength(1);
 
         expect(ca.scanner.providers).not.toContain(cb.scanner.providers[0]!);

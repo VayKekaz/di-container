@@ -1,17 +1,20 @@
 import { DiContainer } from '../src';
 import { BaseProvider } from './assets/BaseProvider';
+import DefaultExportProvider from './assets/DefaultExportProvider';
 import { ProviderA, ProviderB } from './assets/providers_A_B';
 import { BasicScope } from './assets/scopes';
 import { ProviderC } from './assets/subdir/ProviderC';
 
 
-describe('DI Container test', () => {
+describe('Basic DI Container test', () => {
     let container: DiContainer;
 
     beforeAll(async () => {
-        container = await new DiContainer({
+        container = new DiContainer({
             scan: { scanDirectory: __dirname, scope: BasicScope },
-        }).init();
+        });
+        // container.debug = console.log;
+        await container.init();
     });
 
     test('a is instantiated', async () => {
@@ -27,6 +30,11 @@ describe('DI Container test', () => {
     test('c is instantiated', async () => {
         const c = container.get(ProviderC);
         expect(c).toBeInstanceOf(ProviderC);
+    });
+
+    test('DefaultExportProvider is instantiated', () => {
+        expect(container.get(DefaultExportProvider))
+            .toBeInstanceOf(DefaultExportProvider);
     });
 
     test('inheritance is working properly', () => {

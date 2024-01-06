@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "packageManager": "yarn@4.0.2",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --project tsconfig.build.json",
     "test": "jest",
     "prepack": "yarn run build",
     "_prepublish": "yarn run test"

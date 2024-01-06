@@ -13,6 +13,17 @@ export type DiContainerOptions = Partial<{
  * Scans for classes decorated with `@Provider()` and instantiates them.
  */
 export class DiContainer {
+    #debug: (...args: any[]) => void = () => null;
+
+    get debug() {
+        return this.#debug;
+    }
+
+    set debug(value) {
+        this.#debug = value;
+        this.scanner.debug = value;
+    }
+
     protected readonly providers = new Map<any, any>();
     readonly scanner: ProviderScanner;
 

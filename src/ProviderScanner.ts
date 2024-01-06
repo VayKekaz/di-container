@@ -1,15 +1,20 @@
 import { PathLike } from 'fs';
+import path from 'path';
 import { isCorrectScope, isProvider } from './decorators';
 import { AbstractClass, ProviderClass } from './types';
 import { getAllFiles, isSubclassOf } from './util';
 
 
 export type ProviderScanOptions = Partial<{
+    // If not provided `process.cwd()` will be used (usually project root), which will affect startup performance.
     scanDirectory: ProviderScanner['scanDirectory']
+    // Containers with different scopes do not share providers unless container's scope is a regexp.
     scope: ProviderScanner['scope']
 }>
 
 export class ProviderScanner {
+    debug: (...args: any[]) => void = () => null;
+
     providers: ReadonlyArray<ProviderClass> = [];
     readonly scanDirectory: PathLike;
     readonly scope: string | RegExp | symbol | null;
@@ -45,22 +50,34 @@ export class ProviderScanner {
     }
 
     private findProviderClassesInFile = async (filepath: string): Promise<Array<ProviderClass>> => {
-        const providersFound = [];
+        const providersFound: Array<ProviderClass> = [];
         try {
-            // console.log(`Importing ${filepath}`);
+            if (!isNodeExecutable(filepath)) {
+                this.debug(`Skipping import(${filepath}) since it's not node executable.`);
+                return providersFound;
+            }
+
+            this.debug(`Importing ${filepath}`);
             const exportedMembers = await import(filepath);
-            // console.log('Found members:', Object.values(exportedMembers));
+
+            this.debug('Found members:', Object.values(exportedMembers));
             for (const member of Object.values(exportedMembers)) {
                 if (isProvider(member) && isCorrectScope(member, this.scope)) {
-                    // console.log(`Found provider ${member.name}(${JSON.stringify(getMetadata(member))})`);
+                    this.debug(`Found provider: ${member}`);
                     providersFound.push(member);
                 }
             }
         } catch (e) {
-            // console.log(`unable to require(${filepath})`);
-            // console.error(e);
+            this.debug(`Error importing '${filepath}':`, e);
         }
-        // console.log('Found providers:', providersFound);
+
+        this.debug('Found providers:', providersFound);
         return providersFound;
     };
 }
+
+const nodeExecutableExtensions = ['.ts', '.js'];
+const isNodeExecutable = (filepath: string): boolean => {
+    return nodeExecutableExtensions
+        .includes(path.extname(filepath));
+};
