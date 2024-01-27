@@ -11,30 +11,33 @@ export type ProviderMetadata = {
 }
 
 export type ProviderClass<
-    T = unknown,
+    T extends unknown = unknown,
     Args extends ConstructorParameters<Class<T>> = Array<any>,
 > = Class<T, Args> & {
-    [DiMetadata]: ProviderMetadata
+    prototype: T & { metadata: ProviderMetadata }
 }
 
 export const addProviderMetadata =
-    <T extends Class<any>>(
+    <Inst, T extends Class<any>>(
         clazz: T,
         metadata: ProviderMetadata,
-    ): T & ProviderClass => {
-        return class extends clazz {
-            static [DiMetadata] = metadata;
-        };
+    ): T & ProviderClass<any> => {
+        if (hasProviderMetadata(clazz)) {
+            Object.assign(clazz.prototype[DiMetadata], metadata);
+        } else {
+            clazz.prototype[DiMetadata] = metadata;
+        }
+        return clazz;
     };
 
 export const getProviderMetadata = (thing: unknown): Partial<ProviderMetadata> => {
     if (hasProviderMetadata(thing))
-        return thing[DiMetadata];
+        return thing.prototype[DiMetadata];
     return {};
 };
 
 export const hasProviderMetadata = (thing: unknown): thing is ProviderClass => {
     return isClass(thing)
-        && DiMetadata in thing
-        && typeof thing[DiMetadata] === 'object';
+        && DiMetadata in thing.prototype
+        && typeof thing.prototype.metadata !== 'object';
 };
