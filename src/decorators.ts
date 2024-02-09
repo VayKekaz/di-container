@@ -1,20 +1,21 @@
+import { GlobalScope } from './globalScopeProviders';
 import { addProviderMetadata, getProviderMetadata, ProviderClass } from './metadata';
 import { ProviderScanner } from './ProviderScanner';
 import { Class } from './types';
 
 
-export const isProviderSymbol = Symbol('isProvider');
-export const providerScopeSymbol = Symbol('providerScope');
+export const isProviderSymbol = Symbol('IsProvider');
+export const providerScopeSymbol = Symbol('ProviderScope');
 
 // it's required to put this type on `export const Provider` to prevent
 // // TS4023: Exported variable 'Provider' has or is using name 'DiMetadata' from external module "/opt/di-container/src/metadata" but cannot be named.
-type ProviderDecorator = (scope?: string | symbol | null) =>
+type ProviderDecorator = (scope?: string | symbol) =>
     <T extends Class>(clazz: T) => T & ProviderClass
 /**
  * Marks class as a provider for `ProviderScanner` to take reference to.
  * @param scope if provider's scope does not match service's scope, it won't be included
  */
-export const Provider: ProviderDecorator = (scope: string | symbol | null = null) =>
+export const Provider: ProviderDecorator = (scope: string | symbol = GlobalScope) =>
     <T extends Class>(clazz: T): T & ProviderClass =>
         addProviderMetadata(clazz, { [isProviderSymbol]: true, [providerScopeSymbol]: scope });
 

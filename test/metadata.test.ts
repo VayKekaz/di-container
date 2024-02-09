@@ -1,4 +1,4 @@
-import { Provider } from '../src';
+import { GlobalScope, Provider } from '../src';
 import { isProviderSymbol, providerScopeSymbol } from '../src/decorators';
 import { getProviderMetadata } from '../src/metadata';
 import { BasicScope } from './assets/scopes';
@@ -21,7 +21,7 @@ describe('Metadata test', () => {
         });
         expect(getProviderMetadata(basicProviderB)).toEqual({
             [isProviderSymbol]: true,
-            [providerScopeSymbol]: null,
+            [providerScopeSymbol]: GlobalScope,
         });
     });
 });
